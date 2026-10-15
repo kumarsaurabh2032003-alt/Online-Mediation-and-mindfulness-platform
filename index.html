@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoga Dhyan 3D</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,sans-serif;color:#fff;min-height:100vh;background:#1b0f3a url(bg.jpg) 50% 35%/cover no-repeat fixed}body:before{content:'';position:fixed;inset:0;background:#10082a40;z-index:-1}h1,h2{text-shadow:0 2px 12px #000a}body.first:before{background:#10082a14}
+#scene{position:fixed;inset:0;z-index:-2;perspective:900px;overflow:hidden;background:#1b0f3a}
+#pw{position:absolute;inset:0;transform-style:preserve-3d;animation:drift 14s ease-in-out infinite alternate}
+#photo{position:absolute;inset:-3%;background:url(bg.jpg) 50% 35%/cover no-repeat;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.03);transition:transform .2s;box-shadow:0 0 120px #000a}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(#fff6,#ffd54f00 70%);animation:fl 7s ease-in-out infinite}
+@keyframes drift{from{transform:translateZ(-30px) rotateZ(-.6deg)}to{transform:translateZ(60px) rotateZ(.6deg)}}
+@keyframes fl{50%{transform:translate(30px,-60px) scale(1.3)}}
+nav{display:none;gap:8px;padding:12px;flex-wrap:wrap;justify-content:center;background:#0006;position:sticky;top:0;z-index:5}
+nav button,.btn{background:#ffffff22;color:#fff;border:1px solid #fff5;padding:10px 16px;border-radius:12px;cursor:pointer;font-size:15px}
+nav button:hover,.btn:hover{background:#ffffff44}
+.page{perspective:1200px;display:none;max-width:900px;margin:24px auto;padding:20px}
+.page.on{display:block}
+.card{background:#000a;backdrop-filter:blur(6px);border:1px solid #fff3;border-radius:20px;padding:22px;margin:14px 0;transform-style:preserve-3d;transition:transform .15s;box-shadow:0 20px 40px #0007}
+input,select{padding:10px;border-radius:10px;border:0;margin:4px 0;width:100%;font-size:15px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:110px}
+h1,h2{text-align:center;margin:10px 0}
+.lotus{width:110px;height:110px;margin:20px auto;position:relative;transform-style:preserve-3d;animation:spin 8s linear infinite}
+.lotus i{position:absolute;left:45px;top:0;width:20px;height:55px;background:linear-gradient(#ffd6e8,#ff7eb3);border-radius:50% 50% 10% 10%;transform-origin:50% 100%;top:5px;left:45px}
+@keyframes spin{to{transform:rotateX(55deg) rotateZ(360deg)}}
+.poses{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pose{font-size:44px;padding:16px;border-radius:18px;background:#ffffff22;cursor:pointer;transition:.2s}
+.pose.lit{background:#ffd54f;transform:translateZ(40px) scale(1.2)}
+#chatbox{height:300px;overflow:auto;background:#0004;border-radius:12px;padding:10px;margin-bottom:8px}
+.msg{margin:6px 0}.msg b{color:#ffd54f}.msg small{opacity:.6}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.gal img,.gal video{width:100%;border-radius:12px}
+#alertbar{position:fixed;top:0;left:0;right:0;background:#ffd54f;color:#000;padding:14px;text-align:center;display:none;z-index:9}
+.lk{color:#ffd54f}#dtabs button{flex:0}.day-on{background:#ffd54f!important;color:#000!important}.mason{columns:2 220px;column-gap:10px}.mason img,.mason video{width:100%;margin-bottom:10px;border-radius:14px;display:block;cursor:zoom-in;break-inside:avoid}#lb{position:fixed;inset:0;background:#000d;z-index:30;display:none;align-items:center;justify-content:center;cursor:zoom-out}#lb img{max-width:94%;max-height:94%;border-radius:12px}</style></head><body class="first">
+<div id="lb" onclick="this.style.display='none'"><img id="lbi"></div><div id="alertbar"></div>
+<nav id="nav"><button onclick="go('game')" data-i="game"></button><button onclick="go('media')" data-i="media"></button><button onclick="go('food')" data-i="food"></button><button onclick="go('chat')" data-i="chat"></button><button onclick="go('set')" data-i="set"></button><button id="mutebtn" onclick="S.mute=!S.mute;save()">🔊</button></nav>
+
+<div id="scene"><div id="pw"><div id="photo"></div></div><div class="orb" style="width:140px;height:140px;left:12%;top:60%"></div><div class="orb" style="width:90px;height:90px;left:78%;top:25%;animation-delay:2s"></div><div class="orb" style="width:110px;height:110px;left:55%;top:70%;animation-delay:4s"></div></div>
+<div class="page on" id="login"><h1>🕉️ Yoga Dhyan</h1>
+ <div class="lotus"><i></i><i style="transform:rotate(45deg)"></i><i style="transform:rotate(90deg)"></i><i style="transform:rotate(135deg)"></i><i style="transform:rotate(180deg)"></i><i style="transform:rotate(225deg)"></i><i style="transform:rotate(270deg)"></i><i style="transform:rotate(315deg)"></i></div>
+ <div class="card"><h2>Login</h2><input id="lc" placeholder="Gmail ya Phone number"><input id="lp" type="password" placeholder="Password">
+  <button class="btn" style="width:100%;margin-top:8px" onclick="auth()">Login</button><p id="lerr" style="color:#ffb4a8;margin-top:6px"></p>
+  <p style="text-align:center;font-size:12px;margin-top:6px"><a href="#" class="lk" data-i="create" onclick="go('signup');return false">Create your account</a> &nbsp;|&nbsp; <a href="#" class="lk" data-i="forgot" onclick="go('forgot');return false">Forgot your password?</a></p></div>
+</div>
+
+
+<div class="page" id="signup"><h2 data-i="create">Create your account</h2><div class="card"><input id="sn" placeholder="Aapka naam"><input id="sc" placeholder="Gmail ya Phone number"><input id="sp" type="password" placeholder="Password (4+ akshar)">
+ <button class="btn" style="width:100%;margin-top:8px" onclick="signup()">Account Banao</button><p id="serr" style="color:#ffb4a8"></p><p style="text-align:center"><a href="#" class="lk" onclick="go('login');return false">← Login</a></p></div></div>
+<div class="page" id="forgot"><h2 data-i="forgot">Forgot your password?</h2><div class="card"><input id="rc" placeholder="Gmail ya Phone number"><input id="rn" placeholder="Account banate waqt wala naam"><input id="rp" type="password" placeholder="Naya password (4+ akshar)">
+ <button class="btn" style="width:100%;margin-top:8px" onclick="reset()">Password badlo</button><p id="rerr" style="color:#ffb4a8"></p><p style="text-align:center"><a href="#" class="lk" onclick="go('login');return false">← Login</a></p></div></div>
+<div class="page" id="game"><div class="card" style="text-align:center"><h2>🌬️ Saans (Inhale / Exhale)</h2>
+ <div id="bc" style="width:110px;height:110px;margin:20px auto;border-radius:50%;background:radial-gradient(#ffd54f,#e0764a);box-shadow:0 0 40px #ffd54f88"></div>
+ <p id="bl">Inhale 4 sec, ruko 2 sec, Exhale 4 sec, ruko 2 sec</p><button class="btn" id="bt" onclick="breath()">Start</button></div>
+<div class="card" style="text-align:center"><h2>🧘 Yoga Steps</h2><div id="sfig" style="width:160px;height:160px;margin:6px auto"></div><p id="sl">Har step par itne second ruko, awaaz se pata chalega.</p><p id="sd" style="font-size:14px;opacity:.85;margin:4px 0 8px"></p><button class="btn" onclick="steps()">Start / Stop</button><div class="row" id="sthumbs" style="margin-top:14px"></div></div>
+<h2>🧘 Yoga Pose Yaad Karo</h2>
+ <div class="card"><p style="text-align:center" id="gmsg">Start dabao, jo poses chamken unhe usi order me dabao.</p>
+ <div class="poses" id="poses"></div><p style="text-align:center;margin-top:12px"><button class="btn" id="m1" onclick="gameMusic(0)">🎵 Music 1</button> <button class="btn" id="m2" onclick="gameMusic(1)">🎵 Music 2</button> <button class="btn" onclick="gameMusic(-1)">⏹ Band</button></p>
+ <p style="text-align:center;margin-top:12px">Score: <b id="score">0</b></p>
+ <div style="text-align:center"><button class="btn" onclick="startGame()">Start</button></div></div></div>
+
+<div class="page" id="media"><h2 data-i="media">📷 Photo aur Video</h2>
+<div class="card"><div class="row"><img src="bg.jpg" style="width:100%;border-radius:12px"><video controls src="bg.mp4" poster="bg.jpg" style="width:100%;border-radius:12px"></video></div></div>
+<div class="card"><h2>🎥 Best Yoga Videos</h2><a class="btn" style="text-decoration:none;display:block;margin:6px 0" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=yoga+with+adriene+yoga+for+complete+beginners+20+minute">▶ Yoga With Adriene: Beginners 20 min</a><a class="btn" style="text-decoration:none;display:block;margin:6px 0" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=sarah+beth+yoga+for+beginners+full+body+20+minute">▶ Sarah Beth: Full Body Stretch</a><a class="btn" style="text-decoration:none;display:block;margin:6px 0" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=yoga+vidya+yoga+for+complete+beginners+20+minutes">▶ Yoga Vidya: 20 min Class</a><a class="btn" style="text-decoration:none;display:block;margin:6px 0" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=yoga+for+beginners+hindi+guided+30+minute">▶ Hindi Guided Yoga (Beginners)</a><a class="btn" style="text-decoration:none;display:block;margin:6px 0" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=10+minute+morning+yoga+for+beginners">▶ 10 min Morning Yoga</a><p style="margin:10px 0 4px;font-size:13px">YouTube ka link yahan daalo, video page par ban jayegi:</p><div class="row"><input id="yu" placeholder="https://youtube.com/watch?v=..."><button class="btn" style="flex:0" onclick="addYT()">Add</button></div><div class="gal" id="yg" style="margin-top:10px"></div></div>
+<h2>📤 Apna photo/video upload karo</h2>
+ <div class="card"><h2>🖼️ Yoga Photos aur Videos</h2><div id="lib" class="mason"></div>
+<p style="font-size:13px;margin-top:8px;text-align:center">Aur photo/video chahiye? Free download karo: <a class="lk" target="_blank" rel="noopener" href="https://unsplash.com/s/photos/yoga">Unsplash photos</a> · <a class="lk" target="_blank" rel="noopener" href="https://www.pexels.com/search/yoga/">Pexels photos</a> · <a class="lk" target="_blank" rel="noopener" href="https://www.pexels.com/search/videos/yoga/">Pexels videos</a>. Photo <b>photos</b> folder mein, video <b>videos</b> folder mein daalo, page refresh karte hi dikh jayengi.</p></div>
+<div class="card"><input type="file" id="mf" accept="image/*,video/*"><button class="btn" onclick="upload()">Upload karo</button>
+ <p style="opacity:.7;font-size:13px;margin-top:6px">Upload kar sakte ho, delete nahi hota.</p></div><div class="gal" id="gal"></div></div>
+
+<div class="page" id="chat"><h2>💬 Sab ke saath Chat</h2>
+ <div class="card"><div id="chatbox"></div><div class="row"><input id="ct" placeholder="Apna daily routine ya kuch bhi likho..." onkeydown="if(event.key=='Enter')sendChat()"><button class="btn" style="flex:0" onclick="sendChat()">Bhejo</button></div></div></div>
+
+<div class="page" id="food"><h2 data-i="food">🍎 Khana</h2><div class="card"><div class="row" id="dtabs"></div><div id="plan" style="margin-top:10px"></div></div>
+<h2>✍️ Apna khana jodo</h2>
+ <div class="card"><div class="row"><input id="fn" placeholder="Kya khaya? (roti, dal...)"><input id="ft" type="time"><input id="fw" type="number" placeholder="Paani (glass)"></div>
+ <button class="btn" style="width:100%;margin-top:8px" onclick="addFood()">Add karo (is time par reminder aayega)</button></div>
+ <div class="card"><div id="flist"></div><p>Aaj kul paani: <b id="wt">0</b> glass</p></div></div>
+
+<div class="page" id="set"><h2 data-i="set">⚙️ Settings</h2><div class="card">
+<p><label><input type="checkbox" id="s1" style="width:auto" onchange="S.mute=this.checked;save()"> 🔇 Sab sound band / close</label></p>
+<p style="margin-top:10px">🔊 Volume <input type="range" id="s2" min="0" max="1" step="0.05" oninput="S.vol=+this.value;save()"></p>
+<p style="margin-top:10px"><label><input type="checkbox" id="s3" style="width:auto" onchange="omOn=this.checked;save()"> 🕉️ Om background sound</label></p>
+<p style="margin-top:10px">💡 Brightness <input type="range" id="s4" min="50" max="120" oninput="S.bright=+this.value;save()"></p>
+<p style="margin-top:10px">🌐 Language / भाषा <select id="s5" onchange="S.lang=this.value;save()"><option value="hi">हिंदी</option><option value="en">English</option><option value="pa">ਪੰਜਾਬੀ</option><option value="bn">বাংলা</option></select></p>
+<p style="margin-top:10px"><label><input type="checkbox" id="s6" style="width:auto" onchange="S.water=this.checked;save()"> 💧 Paani peene ka alarm</label>
+ <select id="s7" onchange="S.mins=+this.value;save()"><option value="30">Har 30 min</option><option value="60">Har 60 min</option><option value="90">Har 90 min</option><option value="120">Har 2 ghante</option></select></p>
+<div class="row" style="margin-top:12px"><button class="btn" onclick="waterAlarm()">Test alarm</button><button class="btn" onclick="location.reload()">Logout</button></div></div></div>
+<script>
+let user='',ac,om,omOn=true;
+const $=id=>document.getElementById(id);
+let gm=null,gi=0;
+function gameMusic(i){if(gm){gm.pause();gm=null}if(i<0){if(om)om.gain.value=omOn?.15:0;return}gi=i;gm=new Audio('/songs/game'+(i+1)+'.mp3');gm.loop=true;gm.play().catch(()=>{});if(om)om.gain.value=0}
+function go(p){if(p=='game')gameMusic(gi);else if(gm)gameMusic(-1);document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(p).classList.add('on');if(p=='media')loadMedia();if(p=='food')showFood()}
+async function post(u,o){return (await fetch(u,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(o)})).text()}
+addEventListener('mousemove',e=>{const p=$('photo');p.style.setProperty('--ry',((e.clientX/innerWidth-.5)*12)+'deg');p.style.setProperty('--rx',((.5-e.clientY/innerHeight)*8)+'deg')});
+let md='up';
+function mode(m){md=m;$('ln').style.display=m=='up'?'block':'none';$('lgo').textContent=m=='up'?'Account Banao':'Login karo';$('lerr').textContent=''}
+async function auth(){const n=$('ln').value.trim(),c=$('lc').value.trim(),p=$('lp').value;
+ if(!c||!p||(md=='up'&&!n))return $('lerr').textContent='Sab kuch bharo';
+ const r=await fetch('/api/'+(md=='up'?'signup':'login'),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({name:n,contact:c,pass:p})});
+ const t=await r.text();if(!r.ok){$('lerr').textContent=t;return}
+ user=t;$('nav').style.display='flex';$('scene').style.display='none';document.body.classList.remove('first');stopSong();startOm();Notification.requestPermission();go('game')}
+// Songs (khud banaye, copyright wale gaane nahi)
+let cur=null;
+function stopSong(){if(cur){cur.stop();cur=null}}
+function ownSong(i){const f=i.files[0];if(!f)return;stopSong();const a=new Audio(URL.createObjectURL(f));a.loop=true;a.play();cur={stop(){a.pause()}}}
+function playSong(k){ac=ac||new AudioContext();stopSong();const g=ac.createGain();g.gain.value=.25;g.connect(ac.destination);const nd=[];let tm;
+ if(k=='om')[136.1,272.2,408.3].forEach(f=>{const o=ac.createOscillator();o.frequency.value=f;o.connect(g);o.start();nd.push(o)});
+ if(k=='bell'){const hit=()=>{const o=ac.createOscillator(),e=ac.createGain();o.frequency.value=[523,659,784,988][Math.floor(Math.random()*4)];e.gain.setValueAtTime(.5,ac.currentTime);e.gain.exponentialRampToValueAtTime(.001,ac.currentTime+2.5);o.connect(e);e.connect(g);o.start();o.stop(ac.currentTime+2.6)};hit();tm=setInterval(hit,1800)}
+ if(k=='rain'){const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const s=ac.createBufferSource();s.buffer=b;s.loop=true;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=900;s.connect(f);f.connect(g);s.start();nd.push(s)}
+ cur={stop(){nd.forEach(n=>{try{n.stop()}catch(e){}});clearInterval(tm);g.disconnect()}}}
+// Om sound (khud banaya, file ki zarurat nahi)
+function startOm(){ac=ac||new AudioContext();om=ac.createGain();om.gain.value=.15;om.connect(ac.destination);
+ [136.1,272.2,408.3].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain(),l=ac.createOscillator(),lg=ac.createGain();o.frequency.value=f;g.gain.value=.5/(i+1);
+ l.frequency.value=.15+i*.07;lg.gain.value=.3/(i+1);l.connect(lg);lg.connect(g.gain);o.connect(g);g.connect(om);o.start();l.start()})}
+function toggleOm(){omOn=!omOn;om.gain.value=(omOn&&!gm)?.15:0}
+function tone(f){const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.setValueAtTime(.3,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.5);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.5)}
+// Game
+const P=['🧘','🙏','🌳','🐍','🌸'],F=[262,294,330,392,440];let seq=[],pos=0,sc=0,busy=false;
+$('poses').innerHTML=P.map((p,i)=>`<div class="pose" id="p${i}" onclick="pick(${i})">${p}</div>`).join('');
+function lit(i){return new Promise(r=>{const e=$('p'+i);e.classList.add('lit');tone(F[i]);setTimeout(()=>{e.classList.remove('lit');setTimeout(r,200)},450)})}
+async function startGame(){seq=[];sc=0;$('score').textContent=0;next()}
+async function next(){seq.push(Math.floor(Math.random()*5));pos=0;busy=true;$('gmsg').textContent='Dhyan se dekho...';for(const i of seq)await lit(i);busy=false;$('gmsg').textContent='Ab aapki baari!'}
+async function pick(i){if(busy||!seq.length)return;lit(i);if(i!=seq[pos]){$('gmsg').textContent='Galat! Dobara Start dabao.';seq=[];return}
+ pos++;if(pos==seq.length){sc++;$('score').textContent=sc;setTimeout(next,700)}}
+// Media
+async function loadMedia(){const t=await (await fetch('/api/media')).text();$('gal').innerHTML='<img src="bg.jpg">'+t.split('\n').filter(x=>x).map(f=>/\.(mp4|webm|mov)$/i.test(f)?`<video controls src="/uploads/${f}"></video>`:`<img src="/uploads/${f}">`).join('')}
+async function upload(){const f=$('mf').files[0];if(!f)return;const r=await fetch('/api/media?name='+encodeURIComponent(f.name),{method:'POST',body:f});if(!r.ok)return alert('Sirf photo/video (50MB tak)');$('mf').value='';loadMedia()}
+// Chat
+async function loadChat(){if(!$('chat').classList.contains('on'))return;const t=await (await fetch('/api/chat')).text();
+ $('chatbox').innerHTML=t.split('\n').filter(x=>x).map(l=>{const[u,m,tm]=l.split('\t');const d=document.createElement('div');d.className='msg';d.innerHTML='<b></b>: <span></span> <small></small>';d.children[0].textContent=u;d.children[1].textContent=m;d.children[2].textContent=tm;return d.outerHTML}).join('');$('chatbox').scrollTop=1e9}
+async function sendChat(){const t=$('ct').value.trim();if(!t)return;$('ct').value='';await post('/api/chat',{user,text:t});loadChat()}
+setInterval(loadChat,2500);
+// Food + reminder
+const today=()=>new Date().toISOString().slice(0,10);
+let foods=JSON.parse(localStorage.getItem('foods')||'[]');
+function showFood(){const t=foods.filter(f=>f.d==today()).sort((a,b)=>a.t.localeCompare(b.t));
+ $('flist').innerHTML=t.map(f=>`<p>⏰ ${f.t} — ${esc(f.n)} 💧${f.w||0}</p>`).join('')||'Abhi kuch add nahi hua';$('wt').textContent=t.reduce((s,f)=>s+(+f.w||0),0)}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function addFood(){const n=$('fn').value.trim(),t=$('ft').value;if(!n||!t)return alert('Khana aur time bharo');
+ foods.push({n,t,w:$('fw').value,d:today(),done:''});localStorage.setItem('foods',JSON.stringify(foods));$('fn').value='';showFood()}
+setInterval(()=>{const now=new Date().toTimeString().slice(0,5);foods.forEach(f=>{if(f.d==today()&&f.t==now&&f.done!=today()){f.done=today();localStorage.setItem('foods',JSON.stringify(foods));
+ const m='⏰ Khane ka time: '+f.n+' — paani bhi piyo 💧';$('alertbar').textContent=m;$('alertbar').style.display='block';setTimeout(()=>$('alertbar').style.display='none',15000);
+ if(Notification.permission=='granted')new Notification(m);if(ac)tone(660)}})},15000);
+</script>
+<script>
+const T={
+hi:{game:'🧘 योग खेल',media:'📷 फोटो/वीडियो',food:'🍎 खाना',chat:'💬 चैट',set:'⚙️ सेटिंग',create:'अकाउंट बनाओ',forgot:'पासवर्ड भूल गए?',water:'💧 पानी पीने का समय!'},
+en:{game:'🧘 Yoga Game',media:'📷 Photos/Videos',food:'🍎 Food',chat:'💬 Chat',set:'⚙️ Settings',create:'Create your account',forgot:'Forgot your password?',water:'💧 Time to drink water!'},
+pa:{game:'🧘 ਯੋਗ ਖੇਡ',media:'📷 ਫੋਟੋ/ਵੀਡੀਓ',food:'🍎 ਖਾਣਾ',chat:'💬 ਚੈਟ',set:'⚙️ ਸੈਟਿੰਗ',create:'ਖਾਤਾ ਬਣਾਓ',forgot:'ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?',water:'💧 ਪਾਣੀ ਪੀਣ ਦਾ ਸਮਾਂ!'},
+bn:{game:'🧘 যোগ খেলা',media:'📷 ছবি/ভিডিও',food:'🍎 খাবার',chat:'💬 চ্যাট',set:'⚙️ সেটিংস',create:'অ্যাকাউন্ট তৈরি করুন',forgot:'পাসওয়ার্ড ভুলে গেছেন?',water:'💧 জল খাওয়ার সময়!'}};
+const S=Object.assign({mute:false,vol:.6,bright:100,lang:'hi',water:true,mins:60},JSON.parse(localStorage.getItem('S')||'{}'));
+const tt=k=>(T[S.lang]||T.hi)[k];
+function save(){localStorage.setItem('S',JSON.stringify(S));apply()}
+function apply(){document.documentElement.style.filter='brightness('+S.bright+'%)';
+ document.querySelectorAll('[data-i]').forEach(e=>{const v=tt(e.dataset.i);if(v)e.textContent=v});
+ if(typeof om!='undefined'&&om)om.gain.value=(omOn&&!S.mute&&!gm)?.15*S.vol/.6:0;
+ if(gm)gm.volume=S.mute?0:S.vol;$('mutebtn').textContent=S.mute?'🔇':'🔊'}
+function tone(f){if(S.mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.setValueAtTime(.3*S.vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.5);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.5)}
+function gameMusic(i){if(gm){gm.pause();gm=null}if(i>=0){gi=i;gm=new Audio('/songs/game'+(i+1)+'.mp3');gm.loop=true;gm.play().catch(()=>{})}apply()}
+function toggleOm(){omOn=!omOn;apply()}
+const _go=go;go=function(p){_go(p);if(p=='set'){$('s1').checked=S.mute;$('s2').value=S.vol;$('s3').checked=omOn;$('s4').value=S.bright;$('s5').value=S.lang;$('s6').checked=S.water;$('s7').value=S.mins}if(p=='food')plan();if(p=='media'){showYT();loadLib()}};
+async function api(u,o){try{const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(o)});return[r.ok,await r.text()]}catch(e){return[false,'❌ Server se connect nahi hua. Java server chalu karo (java Server) aur browser me http://localhost:8080 kholo, file seedha mat kholo.']}}
+function enter(n){user=n;$('nav').style.display='flex';$('scene').style.display='none';document.body.classList.remove('first');startOm();if('Notification' in window)Notification.requestPermission();go('game');apply();startWater()}
+async function auth(){const c=$('lc').value.trim(),p=$('lp').value;if(!c||!p)return $('lerr').textContent='Gmail/Phone aur password bharo';const[ok,m]=await api('/api/login',{contact:c,pass:p});if(!ok)return $('lerr').textContent=m;enter(m)}
+async function signup(){const n=$('sn').value.trim(),c=$('sc').value.trim(),p=$('sp').value;if(!n||!c||!p)return $('serr').textContent='Sab kuch bharo';const[ok,m]=await api('/api/signup',{name:n,contact:c,pass:p});if(!ok){$('serr').style.color='#ffb4a8';return $('serr').textContent=m}$('serr').style.color='#8ff0a4';$('serr').textContent='✅ Account ban gaya! Ab Login karo.';$('lc').value=c;$('lp').value='';setTimeout(()=>{$('serr').textContent='';go('login')},1800)}
+async function reset(){const[ok,m]=await api('/api/reset',{contact:$('rc').value.trim(),name:$('rn').value.trim(),pass:$('rp').value});$('rerr').textContent=ok?'Password badal gaya, ab Login karo':m;if(ok)setTimeout(()=>go('login'),1500)}
+// Saans
+let bt=null;
+function breath(){const c=$('bc');if(bt){clearInterval(bt);bt=null;c.style.transform='scale(1)';$('bl').textContent='Ruk gaya';return}
+ const ph=[['Saans andar (Inhale)',4,1.6],['Ruko',2,1.6],['Saans bahar (Exhale)',4,1],['Ruko',2,1]];let i=0,l=4;
+ const set=()=>{c.style.transition='transform '+ph[i][1]+'s linear';c.style.transform='scale('+ph[i][2]+')';tone(300+i*70)};set();$('bl').textContent=ph[0][0]+' — 4';
+ bt=setInterval(()=>{l--;if(l<=0){i=(i+1)%4;l=ph[i][1];set()}$('bl').textContent=ph[i][0]+' — '+l},1000)}
+// Yoga steps
+const SV=[
+{n:'🧘 Sukhasana',s:6,d:'Seedhe baitho, pair mod kar, aankhein band, haath ghutno par.',p:'M40 94 L74 90 M80 94 L46 90 M60 80 L60 44 M60 50 L42 70 L40 84 M60 50 L78 70 L80 84',h:[60,32]},
+{n:'🙏 Pranam',s:4,d:'Seedhe khade ho, haath seene par jodo, gehri saans lo.',p:'M60 32 L60 70 M60 70 L54 106 M60 70 L66 106 M60 40 L47 54 L60 50 M60 40 L73 54 L60 50',h:[60,22]},
+{n:'🌳 Vrikshasana',s:6,d:'Ek pair par khade ho, doosra pair jaangh par, haath upar jodo.',p:'M60 28 L60 66 M60 66 L60 106 M60 66 L82 82 L62 92 M60 34 L44 20 L58 6 M60 34 L76 20 L62 6',h:[60,18]},
+{n:'🐍 Bhujangasana',s:6,d:'Pet ke bal let kar, haathon par seena dheere upar uthao.',p:'M16 100 L66 98 L84 68 M82 72 L88 100',h:[88,54]},
+{n:'👶 Balasana',s:6,d:'Ghutne mod kar peeche baitho, aage jhuk kar mathha zameen par rakho.',p:'M50 100 L30 100 L38 84 M38 84 L80 92 M78 92 L108 100',h:[88,98],r:8}];
+function fig(i,w){const o=SV[i];return `<svg viewBox="0 0 120 120" width="${w}" height="${w}"><path d="M8 106H112" stroke="#ffffff66" stroke-width="3" stroke-linecap="round"/><path d="${o.p}" fill="none" stroke="#ffd54f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${o.h[0]}" cy="${o.h[1]}" r="${o.r||10}" fill="#ffd54f"/></svg>`}
+function showStep(i){$('sfig').innerHTML=fig(i,160);$('sd').textContent=SV[i].d;document.querySelectorAll('#sthumbs>div').forEach((d,j)=>d.style.outline=j==i?'2px solid #ffd54f':'none')}
+function thumbs(){$('sthumbs').innerHTML=SV.map((o,i)=>`<div style="background:#ffffff14;border-radius:12px;padding:6px;text-align:center;font-size:13px">${fig(i,80)}<br>${o.n}<br>${o.s} sec</div>`).join('');showStep(0)}
+let sj=null;
+function steps(){const e=$('sl');if(sj){clearInterval(sj);sj=null;e.textContent='Ruk gaya';return}
+ let i=0,l=SV[0].s;const show=()=>e.textContent=SV[i].n+' — '+l+' sec ruko';showStep(0);show();tone(440);
+ sj=setInterval(()=>{l--;if(l<=0){i++;if(i>=SV.length){clearInterval(sj);sj=null;e.textContent='✅ Poora hua, shabash!';tone(660);return}l=SV[i].s;showStep(i);tone(440)}show()},1000)}
+async function loadLib(){const t=(await (await fetch('/api/library')).text()).split('\n').filter(x=>x);
+ $('lib').innerHTML=t.map(l=>{const n=encodeURIComponent(l.slice(2));return l[0]=='p'?`<img loading="lazy" src="/photos/${n}" onclick="$('lbi').src=this.src;$('lb').style.display='flex'">`:`<video controls preload="metadata" src="/videos/${n}"></video>`}).join('')||'<p style="text-align:center">Abhi photos/videos folder khali hain. Neeche ke links se free yoga photo/video download karke un folders mein daalo.</p>'}
+// YouTube
+let yv=JSON.parse(localStorage.getItem('yv')||'[]');
+function addYT(){const m=$('yu').value.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/);if(!m)return alert('Sahi YouTube link daalo');if(!yv.includes(m[1])){yv.push(m[1]);localStorage.setItem('yv',JSON.stringify(yv))}$('yu').value='';showYT()}
+function showYT(){$('yg').innerHTML=yv.map(id=>`<iframe width="100%" height="180" src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen loading="lazy"></iframe>`).join('')}
+// Khana plan (subah se shaam)
+const DN=['Ravivar','Somvar','Mangalvar','Budhvar','Guruvar','Shukravar','Shanivar'];
+const PL=[['Dosa + sambar','Dal, sabzi, roti, chawal','Fruit chaat','Halki khichdi'],['Poha + chai','Dal, 2 roti, lauki sabzi','Fruit + badam','Moong khichdi + dahi'],['Oats + fruit','Rajma chawal + salad','Chana chaat','Paneer sabzi + 2 roti'],['Besan chilla + chutney','Dal, roti, bhindi','Makhana + chai','Sabzi daliya'],['Upma + chutney','Chole + roti + salad','Dahi + fruit','Palak dal + roti'],['Idli sambar','Veg pulao + raita','Sprouts salad','Soup + 2 roti + sabzi'],['Paneer paratha + dahi','Kadhi + chawal','Bhuna chana','Mix veg + roti']];
+const TM=['🌅 Subah 8:00 Nashta','☀️ Dopahar 1:00 Lunch','🍵 Shaam 5:00 Snack','🌙 Raat 8:00 Dinner'];
+let pd=new Date().getDay();
+function plan(d){if(d!==undefined)pd=d;$('dtabs').innerHTML=DN.map((n,i)=>`<button class="btn ${i==pd?'day-on':''}" onclick="plan(${i})">${n.slice(0,3)}</button>`).join('');
+ $('plan').innerHTML='<b>'+DN[pd]+(pd==new Date().getDay()?' (Aaj)':'')+'</b>'+PL[pd].map((f,i)=>`<p style="margin:6px 0">${TM[i]}: ${f}</p>`).join('')+'<p style="margin:6px 0">💧 Din bhar mein 8 glass paani</p>'}
+// Paani alarm
+let wt=null;
+function waterAlarm(){const m=tt('water');$('alertbar').textContent=m;$('alertbar').style.display='block';setTimeout(()=>$('alertbar').style.display='none',15000);
+ if('Notification' in window&&Notification.permission=='granted')new Notification(m);if(ac)[660,880,660,880].forEach((f,i)=>setTimeout(()=>tone(f),i*400))}
+function startWater(){clearInterval(wt);let last=Date.now();wt=setInterval(()=>{if(S.water&&Date.now()-last>=S.mins*60000){last=Date.now();waterAlarm()}},20000)}
+if(location.protocol=='file:')$('lerr').textContent='⚠️ Page seedha file se khula hai. Java server chalao aur http://localhost:8080 kholo.';
+thumbs();apply();
+</script></body></html>
